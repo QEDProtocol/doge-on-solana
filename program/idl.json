@@ -1,0 +1,434 @@
+{
+  "version": "0.0.0",
+  "name": "qed_solana_doge_ibc_v3_program",
+  "instructions": [
+    {
+      "name": "Create",
+      "accounts": [
+        {
+          "name": "qedDogeIbc",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "The program derived address of the qed_doge_ibc account to create (seeds: ['qed_doge_ibc', authority])"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "The authority of the qed_doge_ibc"
+          ]
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "The account paying for the storage fees"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "The system program"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "initData",
+          "type": "bytes"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 0
+      }
+    },
+    {
+      "name": "AppendBlock",
+      "accounts": [
+        {
+          "name": "qedDogeIbc",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "The program derived address of the qed_doge_ibc account to increment (seeds: ['qed_doge_ibc', authority])"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "The authority of the qed_doge_ibc"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "blockNumber",
+          "type": "u32"
+        },
+        {
+          "name": "powHashMode",
+          "type": "u8"
+        },
+        {
+          "name": "blockHeader",
+          "type": {
+            "defined": "QSQDogeBlockHeader"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 1
+      }
+    },
+    {
+      "name": "AppendBlockZKP",
+      "accounts": [
+        {
+          "name": "qedDogeIbc",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "The program derived address of the qed_doge_ibc account to increment (seeds: ['qed_doge_ibc', authority])"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "The authority of the qed_doge_ibc"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "blockNumber",
+          "type": "u32"
+        },
+        {
+          "name": "powHashMode",
+          "type": "u8"
+        },
+        {
+          "name": "knownPowHash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "blockHeader",
+          "type": {
+            "defined": "QSQDogeBlockHeader"
+          }
+        },
+        {
+          "name": "scryptProof",
+          "type": {
+            "array": [
+              "u8",
+              260
+            ]
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 2
+      }
+    }
+  ],
+  "accounts": [
+    {
+      "name": "QEDDogeIBC",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "defined": "Key"
+            }
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "value",
+            "type": "u32"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "QSQDogeBlockHeader",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "header",
+            "type": {
+              "defined": "QSQStandardBlockHeader"
+            }
+          },
+          {
+            "name": "auxPow",
+            "type": {
+              "option": {
+                "defined": "QSQAuxPow"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "QSQDogeBlock",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "header",
+            "type": {
+              "defined": "QSQStandardBlockHeader"
+            }
+          },
+          {
+            "name": "auxPow",
+            "type": {
+              "option": {
+                "defined": "QSQAuxPow"
+              }
+            }
+          },
+          {
+            "name": "transactions",
+            "type": {
+              "vec": {
+                "defined": "QSBTCTransaction"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "QSQMerkleBranch",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hashes",
+            "type": {
+              "vec": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            }
+          },
+          {
+            "name": "sideMask",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QSQAuxPow",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coinbaseTransaction",
+            "type": {
+              "defined": "QSBTCTransaction"
+            }
+          },
+          {
+            "name": "blockHash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "coinbaseBranch",
+            "type": {
+              "defined": "QSQMerkleBranch"
+            }
+          },
+          {
+            "name": "blockchainBranch",
+            "type": {
+              "defined": "QSQMerkleBranch"
+            }
+          },
+          {
+            "name": "parentBlock",
+            "type": {
+              "defined": "QSQStandardBlockHeader"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "QSQStandardBlockHeader",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u32"
+          },
+          {
+            "name": "previousBlockHash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "merkleRoot",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "u32"
+          },
+          {
+            "name": "bits",
+            "type": "u32"
+          },
+          {
+            "name": "nonce",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QSBTCTransaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u32"
+          },
+          {
+            "name": "inputs",
+            "type": {
+              "vec": {
+                "defined": "QSBTCTransactionInput"
+              }
+            }
+          },
+          {
+            "name": "outputs",
+            "type": {
+              "vec": {
+                "defined": "QSBTCTransactionOutput"
+              }
+            }
+          },
+          {
+            "name": "locktime",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QSBTCTransactionOutput",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u64"
+          },
+          {
+            "name": "script",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QSBTCTransactionInput",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "index",
+            "type": "u32"
+          },
+          {
+            "name": "script",
+            "type": "bytes"
+          },
+          {
+            "name": "sequence",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Key",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Uninitialized"
+          },
+          {
+            "name": "QEDDogeIBC"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "origin": "shank",
+    "address": "Fu4pdQiKyrBKnUyvtbGUPkcg2HKp9d6Ji8JLGvS6E7UQ",
+    "binaryVersion": "0.4.2",
+    "libVersion": "^0.4.2"
+  }
+}

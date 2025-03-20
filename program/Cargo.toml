@@ -1,0 +1,59 @@
+[package]
+name = "qed-solana-doge-ibc-v3-program"
+version = "0.0.0"
+edition = "2021"
+readme = "./README.md"
+license-file = "../LICENSE"
+publish = false
+
+[package.metadata.solana]
+program-id = "Fu4pdQiKyrBKnUyvtbGUPkcg2HKp9d6Ji8JLGvS6E7UQ"
+program-dependencies = ["CzqeK66uHUYbauvaLJ3sfQd9JmiMqvvPvAudpZmhr6xF"]
+account-dependencies = []
+
+[features]
+borsh = []
+serde = []
+doge_mainnet = []
+doge_testnet = []
+doge_regtest = []
+dummy_zkp = []
+default = ["borsh", "doge_mainnet"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+borsh = "^0.10"
+shank = "^0.4.2"
+num-derive = "^0.3"
+num-traits = "^0.2"
+solana-program = "=2.1.6"
+thiserror = "^1.0"
+doge-light-client = { git = "https://github.com/QEDProtocol/doge-light-client", branch = "1.0.1", default-features = false, features = ["solprogram", "borsh"] }
+
+zerocopy = { git = "https://github.com/cf/zerocopy-borsh-serde", branch = "borsh-serde-v0.8.23", features = ["borsh"], default-features = false }
+zerocopy-derive = { git = "https://github.com/cf/zerocopy-borsh-serde", branch = "borsh-serde-v0.8.23" }
+sp1-solana = { git = "https://github.com/cf/sp1-solana", branch = "working1" }
+hex = "0.4.3"
+
+k256 = { version = "0.13.2", features = ["ecdsa"], default-features = false, optional = true }
+
+[target.'cfg(not(target_os = "solana"))'.dependencies]
+k256 = { version = "0.13.2", features = ["ecdsa"], default-features = false }
+
+
+
+[dev-dependencies]
+hex-literal = "0.4.1"
+
+k256 = { version = "0.13.2", features = [
+  "arithmetic",
+  "ecdsa",
+  "pkcs8",
+  "precomputed-tables",
+  "schnorr",
+  "signature",
+  "std",
+  "serde",
+] }
