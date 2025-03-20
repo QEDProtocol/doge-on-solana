@@ -11,7 +11,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/QEDProtocol/doge-on-solana">
-  <img height="256" src="https://github.com/QEDProtocol/doge-on-solana/raw/main/static/doge-sol-ibc.png?raw=true">
+  <img height="400" src="https://github.com/QEDProtocol/doge-on-solana/raw/main/static/doge-sol-ibc.png?raw=true">
   </a>
 
   <h3 align="center">Doge on Solana</h3>
