@@ -1170,25 +1170,7 @@ dependencies = [
 [[package]]
 name = "doge-light-client"
 version = "0.1.0"
-source = "git+https://github.com/QEDProtocol/doge-light-client?branch=1.0.0#cb5bfca107364860665d12eca57b3260a403f4de"
-dependencies = [
- "anyhow",
- "borsh 0.10.4",
- "bs58",
- "num-derive 0.3.3",
- "num-traits",
- "ripemd",
- "scrypt",
- "solana-program",
- "thiserror 1.0.69",
- "zerocopy 0.8.23 (git+https://github.com/cf/zerocopy-borsh-serde?branch=borsh-serde-v0.8.23)",
- "zerocopy-derive 0.8.23 (git+https://github.com/cf/zerocopy-borsh-serde?branch=borsh-serde-v0.8.23)",
-]
-
-[[package]]
-name = "doge-light-client"
-version = "0.1.0"
-source = "git+https://github.com/QEDProtocol/doge-light-client?branch=1.0.1#6eca4536ea4c56a1c4ae896289b0ef526e32be75"
+source = "git+https://github.com/QEDProtocol/doge-light-client?branch=1.1.0#db97808456e0907778d468c7ce548622c39df511"
 dependencies = [
  "anyhow",
  "borsh 0.10.4",
@@ -3095,7 +3077,7 @@ name = "qed-solana-doge-ibc-v3-program"
 version = "0.0.0"
 dependencies = [
  "borsh 0.10.4",
- "doge-light-client 0.1.0 (git+https://github.com/QEDProtocol/doge-light-client?branch=1.0.1)",
+ "doge-light-client",
  "hex",
  "hex-literal",
  "k256",
@@ -3117,7 +3099,7 @@ dependencies = [
  "assert_matches",
  "bincode",
  "borsh 0.10.4",
- "doge-light-client 0.1.0 (git+https://github.com/QEDProtocol/doge-light-client?branch=1.0.0)",
+ "doge-light-client",
  "hex",
  "hex-literal",
  "num-derive 0.3.3",

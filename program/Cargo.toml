@@ -18,7 +18,7 @@ doge_mainnet = []
 doge_testnet = []
 doge_regtest = []
 dummy_zkp = []
-default = ["borsh", "doge_mainnet"]
+default = ["borsh", "doge_testnet", "dummy_zkp"]
 
 [lib]
 crate-type = ["cdylib", "lib"]
@@ -30,7 +30,7 @@ num-derive = "^0.3"
 num-traits = "^0.2"
 solana-program = "=2.1.6"
 thiserror = "^1.0"
-doge-light-client = { git = "https://github.com/QEDProtocol/doge-light-client", branch = "1.0.1", default-features = false, features = ["solprogram", "borsh"] }
+doge-light-client = { git = "https://github.com/QEDProtocol/doge-light-client", branch = "1.1.0", default-features = false, features = ["solprogram", "borsh"] }
 
 zerocopy = { git = "https://github.com/cf/zerocopy-borsh-serde", branch = "borsh-serde-v0.8.23", features = ["borsh"], default-features = false }
 zerocopy-derive = { git = "https://github.com/cf/zerocopy-borsh-serde", branch = "borsh-serde-v0.8.23" }
