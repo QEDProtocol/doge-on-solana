@@ -1170,7 +1170,7 @@ dependencies = [
 [[package]]
 name = "doge-light-client"
 version = "0.1.0"
-source = "git+https://github.com/QEDProtocol/doge-light-client?branch=1.1.1#a9856575fd4c14ffac2a23a3f5ec1a1b17a4f6e1"
+source = "git+https://github.com/QEDProtocol/doge-light-client?branch=1.1.2#cee0d291b7be4c12ccaf3053e70e43d780132de6"
 dependencies = [
  "anyhow",
  "borsh 0.10.4",
