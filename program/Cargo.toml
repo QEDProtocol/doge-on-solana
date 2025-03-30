@@ -25,6 +25,7 @@ crate-type = ["cdylib", "lib"]
 
 [dependencies]
 borsh = "^0.10"
+bytes = "1.0"
 shank = "^0.4.2"
 num-derive = "^0.3"
 num-traits = "^0.2"
