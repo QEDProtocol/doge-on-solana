@@ -1,4 +1,5 @@
-use borsh::BorshDeserialize;
+use borsh::{BorshDeserialize};
+use bytes::{Buf, BufMut};
 use doge_light_client::core_data::{QDogeBlockHeader, QHash256};
 use solana_program::program_error::ProgramError;
 use solana_program::{
@@ -20,35 +21,40 @@ pub fn process_instruction<'a>(
     accounts: &'a [AccountInfo<'a>],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    if instruction_data[0] == 0 {
-        create(accounts, &instruction_data[1..])?;
+    let mut buf = instruction_data;
+    let instruction_len = instruction_data.len();
+    let instruction_type = buf.get_u8();
+    if instruction_type == 0 {
+        create(accounts, buf.chunk())?;
         return Ok(());
-    } else if instruction_data[0] == 1 && instruction_data.len() > 10 {
-        let block_number = u32::from_le_bytes([
-            instruction_data[1],
-            instruction_data[2],
-            instruction_data[3],
-            instruction_data[4],
-        ]);
-        if instruction_data[5] == 1 && instruction_data.len() > 10 + 260 + 32 {
+    } else if instruction_type == 1 && instruction_len > 10 {
+        let block_number = buf.get_u32_le();
+        let zkp_mode = buf.get_u8();
+        if zkp_mode == 1 && instruction_len > 10 + 260 + 32 {
             // zkp mode
 
-            let known_aux_pow_hash: [u8; 32] = instruction_data[6..(6 + 32)]
-                .try_into()
+            let mut known_aux_pow_hash = [0; 32];
+            buf.copy_to_slice(&mut known_aux_pow_hash);
+
+            let proof_start_ind = buf.len() - 260;
+
+            let header = QDogeBlockHeader::try_from_slice(&buf[0..proof_start_ind])
                 .map_err(|_| ProgramError::InvalidArgument)?;
+            buf.advance(proof_start_ind);
 
-            let proof_start_ind = instruction_data.len()-260;
-
-            let header = QDogeBlockHeader::try_from_slice(&instruction_data[(6 + 32)..proof_start_ind])
-            .map_err(|_| ProgramError::InvalidArgument)?;
-
-            let proof_bytes = &instruction_data[proof_start_ind..(proof_start_ind + 260)];
-            append_block_zkp(accounts, block_number, &header, known_aux_pow_hash, proof_bytes)?;
+            let proof_bytes = buf.chunk();
+            append_block_zkp(
+                accounts,
+                block_number,
+                &header,
+                known_aux_pow_hash,
+                proof_bytes,
+            )?;
 
             return Ok(());
-        } else if instruction_data[5] == 0{
+        } else if zkp_mode == 0 {
             // no zkp for scrypt
-            let header = QDogeBlockHeader::try_from_slice(&instruction_data[6..])
+            let header = QDogeBlockHeader::try_from_slice(buf.chunk())
                 .map_err(|_| ProgramError::InvalidArgument)?;
             append_block(accounts, block_number, &header, None)?;
             return Ok(());
@@ -85,6 +91,10 @@ fn create<'a>(accounts: &'a [AccountInfo<'a>], init_data_bytes: &[u8]) -> Progra
         return Ok(());
     }
 
+    if init_data_bytes.len() != Q_IBC_INNER_STATE_LEN {
+        return Err(ProgramError::InvalidArgument);
+    }
+
     // Create Counter PDA.
     let mut seeds = QEDDogeIBC::seeds(ctx.accounts.authority.key);
     let bump = [counter_bump];
@@ -102,11 +112,11 @@ fn create<'a>(accounts: &'a [AccountInfo<'a>], init_data_bytes: &[u8]) -> Progra
 
     QEDDogeChainState::ref_from_bytes(init_data_bytes)
         .map_err(|_| ProgramError::InvalidArgument)?;
-    ctx.accounts.qed_doge_ibc.data.borrow_mut()[0] = Key::QEDDogeIBC as u8;
-    ctx.accounts.qed_doge_ibc.data.borrow_mut()[1..33]
-        .copy_from_slice(ctx.accounts.authority.key.as_ref());
-    ctx.accounts.qed_doge_ibc.data.borrow_mut()[33..(33 + Q_IBC_INNER_STATE_LEN)]
-        .copy_from_slice(init_data_bytes);
+    let data = &mut ctx.accounts.qed_doge_ibc.data.borrow_mut();
+    let mut writer = data.as_mut();
+    writer.put_u8(Key::QEDDogeIBC as u8);
+    writer.put_slice(ctx.accounts.authority.key.as_ref());
+    writer.put_slice(init_data_bytes);
 
     Ok(())
 }
