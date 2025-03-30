@@ -1,4 +1,4 @@
-use borsh::{BorshDeserialize};
+use borsh::BorshDeserialize;
 use bytes::{Buf, BufMut};
 use doge_light_client::core_data::{QDogeBlockHeader, QHash256};
 use solana_program::program_error::ProgramError;
